@@ -55,7 +55,19 @@ export class IndexController {
 			ssp = ssp.where("`account_access`.`id` IS NULL");
 		}
 
+		ssp.joins.push({
+			table1: "characters",
+			column1: "account",
+			table2: "account",
+			column2: "id",
+			database2: realm.authDatabase,
+			kind: "LEFT",
+			where: `AND \`account\`.\`username\` LIKE 'SRLE\%'`,
+		});
+
 		const result = await ssp.where("`deleteInfos_Account` IS NULL").run(this.armory.config.dbQueryTimeout);
+
+		console.log(result);
 
 		res.json({
 			...result,
